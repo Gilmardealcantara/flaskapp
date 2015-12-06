@@ -13,8 +13,8 @@ cursor = conn.cursor()
 def home():
     return render_template('home.html')
 
-@app.route('/data', methods=['GET', 'POST'])
-def data():
+@app.route('/insertdata', methods=['GET', 'POST'])
+def insertdata():
     if request.method == 'POST':
         form = LoginForm()
         if form.validate_on_submit():
@@ -48,11 +48,12 @@ def data():
         #rows = cursor.fetchall()
         #print rows
             flash('Dados inseridos com sucesso firstName="%s", lastName="%s", phone="%s"' % (form.firstName.data, form.lastName.data, form.phone.data))
-            return redirect('/data')
-        return render_template('data.html', form=form)
-    #return render_template('data.html')
-    else:
-        form = LoginForm()
+            return redirect('/insertdata')
+        return render_template('insertdata.html', form=form)
+    return render_template('insertdata.html', form=LoginForm())
+
+@app.route('/showdata', methods=['GET'])
+def showdata():
         cursor.execute("SELECT id, firstName, lastName, phone FROM users")
         rows = cursor.fetchall()
         objects_list = []
@@ -63,8 +64,8 @@ def data():
             d['lastName'] = row[2]
             d['phone'] = row[3]
             objects_list.append(d)
-            print 'opaaa fera'
-            return render_template('data.html', form=form, result=objects_list, sort_keys=False) 
+            return render_template('showdata.html'),jsonify(dados=objects_list, sort_keys=False) 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
