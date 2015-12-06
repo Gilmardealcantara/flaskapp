@@ -1,0 +1,50 @@
+<html>
+<head>
+	<title>{{ title }} - Trabalho BD2 JSON</title>
+    <meta charset="UTF-8">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">></script> <!--Carrega jQuery-->
+</head>
+<body>
+	<h1>Exibição dos dados via JSON</h1>
+
+  <!--Variável global com o prefixo para a pasta root da aplicação, para tornar dinâmico caso a aplicação mude de pasta-->
+    <script type=text/javascript> 
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; 
+    </script>
+
+    <script type=text/javascript>
+      $(function() {
+        $('button').bind('click', function() {
+          $.getJSON($SCRIPT_ROOT + '/showresults', function(data){
+            var dados = data.result; //var dados recebe objeto JSON do flask jsonify
+            var tr=[];
+            for (var i = 0; i < dados.length; i++) {
+              tr.push('<tr>');
+              tr.push("<td>" + dados[i].id + "</td>");
+              tr.push("<td>" + dados[i].primeiro_nome + "</td>");
+              tr.push("<td>" + dados[i].ultimo_nome + "</td>");
+              tr.push("<td>" + dados[i].cidade + "</td>");
+              tr.push('</tr>');
+            }
+            $('table').append($(tr.join('')));
+          });
+          return false;
+        });
+      });
+   </script>
+
+<button>Get JSON data from MySQL</button>
+<p>
+<span id=resultado></span>
+<p>
+<table id="table">
+    <tr>
+        <th>Id</th>
+        <th>Primeiro Nome</th>
+        <th>Ultimo Nome</th>
+        <th>Cidade</th>
+    </tr>
+    
+</table>
+</body>
+</html>
