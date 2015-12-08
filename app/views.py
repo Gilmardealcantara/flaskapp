@@ -41,10 +41,8 @@ def showdata():
         d['lastName'] = row[2]
         d['phone'] = row[3]
         objects_list.append(d)
-    dados_json = jsonify(dados = objects_list, sort_keys=False)
-    #return dados_json
-    #return jsonify(dados=objects_list, sort_keys=False) 
-    return render_template('showdata.html', dados=dados_json)
+    return render_template('showdata.html', dados=objects_list)
+
 @app.route('/about')
 def about():
     return render_template('about.html')
