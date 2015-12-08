@@ -22,50 +22,29 @@ def insertdata():
             firstName = str(form.firstName.data)
             lastName = str(form.lastName.data)
             phone = str(form.phone.data)
-            values = (firstName,lastName,phone)
-        
-            print fields
-            print values
-
-            cursor.execute("INSERT INTO users (firstName, lastName, phone) VALUES ('a', 'b','c')")
+            cursor.execute("INSERT INTO users (firstName, lastName, phone) VALUES ('%s', '%s', '%s')" % (firstName, lastName, phone))
             conn.commit()
-
-#        def insert(table, fields=(), values=()):
-#            query = 'INSERT INTO %s (%s) VALUES (%s)' % (
-#                table,
-#                ', '.join(fields),
-#                ', '.join(values)
-#            )
-#
-#            print query
-#            cursor.execute(query, values)
-#            cursor.commit()
-#
-#        insert('users', fields, values)
-#        #conn.commit()
-        
-        #cursor.execute("SELECT id, firstName, lastName, phone FROM users")
-        #rows = cursor.fetchall()
-        #print rows
-            flash('Dados inseridos com sucesso firstName="%s", lastName="%s", phone="%s"' % (form.firstName.data, form.lastName.data, form.phone.data))
+            flash('Dados inseridos com sucesso! First Name = "%s", Last Name = "%s", Phone = "%s"' % (firstName, lastName, phone))
             return redirect('/insertdata')
         return render_template('insertdata.html', form=form)
     return render_template('insertdata.html', form=LoginForm())
 
 @app.route('/showdata', methods=['GET'])
 def showdata():
-        cursor.execute("SELECT id, firstName, lastName, phone FROM users")
-        rows = cursor.fetchall()
-        objects_list = []
-        for row in rows:
-            d = collections.OrderedDict()
-            d['id'] = row[0]
-            d['firstName'] = row[1]
-            d['lastName'] = row[2]
-            d['phone'] = row[3]
-            objects_list.append(d)
-            return render_template('showdata.html'),jsonify(dados=objects_list, sort_keys=False) 
-
+    cursor.execute("SELECT id, firstName, lastName, phone FROM users")
+    rows = cursor.fetchall()
+    objects_list = []
+    for row in rows:
+        d = collections.OrderedDict()
+        d['id'] = row[0]
+        d['firstName'] = row[1]
+        d['lastName'] = row[2]
+        d['phone'] = row[3]
+        objects_list.append(d)
+    dados_json = jsonify(dados = objects_list, sort_keys=False)
+    #return dados_json
+    #return jsonify(dados=objects_list, sort_keys=False) 
+    return render_template('showdata.html', dados=dados_json)
 @app.route('/about')
 def about():
     return render_template('about.html')
