@@ -6,8 +6,15 @@ mod = Blueprint('general', __name__, url_prefix='/<lang_code>')
 
 @app.before_request
 def before_request():
-
-    g.lang_code = 'pt'
+    if request.endpoint != 'static':
+        url = urlparse(request.url)
+        language = url.path.split('/')
+        if ('pt' in language or 'en' in language):
+            g.lang_code = language[1]
+        else:
+            g.lang_code = 'pt'
+            new_url = "{}://{}/{}".format(url.scheme, url.netloc, g.lang_code)
+            return redirect(new_url)
 
 @mod.url_defaults
 def add_language_code(endpoint, values):
